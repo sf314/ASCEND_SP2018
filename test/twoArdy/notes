@@ -1,0 +1,13 @@
+ConOps:
+
+Speaker Ardy:
+Pull trigger pin high
+Play tone on buzzer using the tone library
+Wait some amount of time
+Stop and loop
+
+Mic Ardy:
+Wait for trigger
+Record mic pin AND source pin
+
+
