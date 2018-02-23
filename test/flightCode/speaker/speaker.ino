@@ -77,7 +77,7 @@ int toneDuration = 50; // How long to play for
 	// ***** FOR THE BUZZER:
 
 	int buzzerPin = 10; // For passive buzzer. Also used to read source wave
-	int toneFreq = 100; // Hz
+	int toneFreq = 800; // Hz
 
 	void initSpeaker() {
 		pinMode(triggerPin, OUTPUT);

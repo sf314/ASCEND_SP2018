@@ -7,6 +7,18 @@ trigger pin: 2
 source pin: 4
 */
 
+// Time to read two analog signals:
+// 847 microseconds to milliseconds
+
+/*
+Length of cardboard tube: 32.75cm
+Tone Frequency: 100Hz
+Using echo off of can:
+- time shift to echo: ~2ms
+Straight configuration:
+- time shift to sound: ~1ms
+*/
+
 // ***** Includes 
 
 // ***** Proto
