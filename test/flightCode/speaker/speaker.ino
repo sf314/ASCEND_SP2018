@@ -7,6 +7,10 @@
 Tests: 
 twoWave8:
 20cm, 30, 40, 50
+
+2/27: Changes
+Modify to use PWM on two pins to generate higher voltage? Like CanSat buzzer?
+Forget the whole Shied stuff
 */
 
 // CONTROL DEFINES:
@@ -101,6 +105,7 @@ int toneDuration = 50; // How long to play for
 
 		Serial.println("Beep @ freq = " + String(toneFreq));
 		digitalWrite(triggerPin, HIGH);
+        delay(10); // Give buffer!
 		tone(buzzerPin, toneFreq);
 
 		delay(toneDuration);

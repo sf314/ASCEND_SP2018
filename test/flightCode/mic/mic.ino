@@ -18,6 +18,10 @@ Using echo off of can:
 - time shift to echo: ~2ms
 Straight configuration:
 - time shift to sound: ~1ms
+
+2/27: Changes
+Update to send current ping # when asked. 
+Use data arrays instead! And write stuff afterward!
 */
 
 /*
@@ -35,6 +39,7 @@ SCK: pin 13
 #include <string.h>
 #include <SD.h>
 #include <SPI.h>
+#define ARR_MAX_SIZE 200
 
 // #include <vector> // C++
 
@@ -49,14 +54,26 @@ int sdPin = 10;
 File dataFile;
 char fileName[13] = "ping0000.csv"; // number on indexes 4 - 7
 
+// ***** Data stuff
+typedef struct Data {
+    //Data(long t, int d1, int d2); // Init
+    long time;
+    int data1;
+    int data2;
+    bool valid;
+} Data_t;
+Data_t data[ARR_MAX_SIZE];
+
 void setup() {
     SerialUSB.begin(2000000);
+    Serial.begin(96000); // For comms with master controller
     SPI.begin();
+    
     pinMode(triggerPin, INPUT);
     pinMode(ledPin, OUTPUT);
     SerialUSB.println("Start");
 
-    int tries = 0;
+    int tries = 0; // SD card?
     while (!SD.begin(sdPin) && tries < 4) {
         SerialUSB.println("Could not init SD card!");
         tries++;
@@ -111,15 +128,33 @@ void loop() {
         fileName[6] = tens + '0';
         fileName[7] = ones + '0';
         
-        dataFile = SD.open(fileName, FILE_WRITE);
+        // Init data arr to be invalid. 
+        for (int i = 0; i < ARR_MAX_SIZE; i++) {
+            data[i].valid = false;
+        }
 
         // Continuously get data until it is over
-        while (analogRead(triggerPin) > 800) {
-            currentTime = micros();
-            data1 = analogRead(micPin);
-            data2 = analogRead(sourcePin);
-            //SerialUSB.println(String(currentTime) + "," + String(data1) + "," + String(data2));
-            dataFile.println(String(count) + "," + String(currentTime) + "," + String(data1) + "," + String(data2));
+        // USE ARRAY INSTEAD
+        int index = 0;
+        while (analogRead(triggerPin) > 800 && index < ARR_MAX_SIZE) {
+            data[index].time = micros();
+            data[index].data1 = analogRead(micPin);
+            data[index].data1 = analogRead(sourcePin);
+            data[index].valid = true;
+            index++;
+        }
+        
+        // Write data to SD
+        dataFile = SD.open(fileName, FILE_WRITE);
+        for (int i = 0; i < ARR_MAX_SIZE; i++) {
+            if (!data[i].valid) { break; } // That's all the good data
+            
+            currentTime = data[i].time;
+            data1 = data[i].data1;
+            data2 = data[i].data2;
+            String dataString = String(count) + "," + String(currentTime) + "," + String(data1) + "," + String(data2);
+            dataFile.println(dataString);
+            SerialUSB.println(dataString);
         }
         dataFile.close();
 
