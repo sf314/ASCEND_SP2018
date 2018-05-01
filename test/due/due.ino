@@ -42,6 +42,7 @@ sourcePin = 0 -> A0
 selectPin = 1 -> A1 // Remove pinmode input designation
 micPin = 2 -> A2
 
+1000 logs: 7.43ms 
 */
 
 // ***** Includes 
@@ -114,6 +115,17 @@ int thous = 0;
 int count = 0;
 void loop() {
     
+    // Also respond to asynchronous calls?
+    if (Serial1.available()) {
+        char c = Serial1.read();
+        switch (c) {
+            case 's':
+                Serial1.print(String(count));
+                break;
+        }
+    }
+    
+    // Measure data and send response if selected
     if (analogRead(selectPin) > 800) { // Look for buzzer on
         Serial.println("Using filename: " + String(fileName));
 

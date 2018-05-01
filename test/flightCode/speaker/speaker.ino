@@ -86,6 +86,20 @@ int toneDuration = 50; // How long to play for
 	void initSpeaker() {
 		pinMode(triggerPin, OUTPUT);
 		pinMode(buzzerPin, OUTPUT);
+        
+        tone(buzzerPin, 220);
+        delay(200);
+        noTone(buzzerPin);
+        delay(1800);
+        
+        tone(buzzerPin, 220);
+        delay(500);
+        tone(buzzerPin, 440);
+        delay(500);
+        tone(buzzerPin, 880);
+        delay(1000);
+        noTone(buzzerPin);
+        // Play startup tone
 	}
 
 	void play() {
